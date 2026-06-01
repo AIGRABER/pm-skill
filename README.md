@@ -1,10 +1,15 @@
+<div align="center">
+
 # pm-skill
 
-Local-first project management for AI-assisted development.
+**Local-first project management for AI-assisted development.**
 
-`pm-skill` keeps project state where engineers and coding agents can both trust it: inside the Git repository. It gives Codex and other agents a small command layer for recovering context, managing TODOs and requirements, recording branch progress, running checks, preparing handovers, and writing an auditable project trail.
+Keep requirements, TODOs, branch progress, checks, handovers, and audit trails inside the Git repository, so humans and coding agents can resume work without guessing from chat history.
 
-It is designed for the messy middle of real work: long-running branches, interrupted sessions, half-finished TODOs, local validation, release notes, and the moment when a new agent needs to understand what happened before touching code.
+<p><a href="README.md">English</a> | <a href="docs/i18n/README.zh-CN.md">简体中文</a> | <a href="docs/i18n/README.zh-TW.md">繁體中文</a> | <a href="docs/i18n/README.ja.md">日本語</a> | <a href="docs/i18n/README.ko.md">한국어</a> | <a href="docs/i18n/README.es.md">Español</a> | <a href="docs/i18n/README.tr.md">Türkçe</a> | <a href="docs/i18n/README.ru.md">Русский</a></p>
+
+</div>
+
 
 ## Why this exists
 
@@ -140,8 +145,6 @@ The repository remains the source of truth. You can read the Markdown files dire
 
 ## Architecture
 
-`pm-skill` is intentionally small:
-
 ```text
 CLI / REST / MCP
        |
@@ -161,19 +164,11 @@ commands.py handlers
 repository files
 ```
 
-The important rule is that adapters should not call command internals directly. They should go through the shared command envelope so policy, audit, and Git state checks are not skipped.
+Adapters should go through the shared command envelope so policy, audit, and Git state checks are not skipped.
 
 ## Safety Model
 
 `pm-skill` is local-first and repository-scoped. It does not try to replace GitHub Issues, pull requests, CI, or a hosted project-management product. Instead, it provides a durable local coordination layer that works well with those tools.
-
-By default, project policy lives in:
-
-```text
-docs/standards/development-policy.yaml
-```
-
-That policy can define protected branches, branch naming, check profiles, index exclusions, changelog rules, and handover expectations.
 
 Do not put tokens, API keys, `.env` contents, private keys, or credentials into TODOs, requirements, changelogs, handovers, or index files.
 
