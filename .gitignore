@@ -1,0 +1,35 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Local secrets
+.env
+*.pem
+*.key
+
+# pm-skill-managed project state for maintainers
+.pm-skill/
+todo/
+.codex/
+AGENTS.md
+docs/requirements/
+docs/work-packages/
+docs/acceptance/
+docs/handover/
+docs/changelog/
+docs/standards/
+docs/adr/
+docs/release-checklist.md
+docs/pm-skill-understanding.html
+docs/project-dev-management-*.md

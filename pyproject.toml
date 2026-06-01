@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pm-skill"
+version = "0.1.0"
+description = "Local-first project management for AI-assisted development."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = [
+  "ai-agents",
+  "codex",
+  "project-management",
+  "local-first",
+  "cli",
+  "git"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: Apache Software License",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development",
+  "Topic :: Software Development :: Version Control :: Git"
+]
+dependencies = [
+  "PyYAML>=6.0",
+  "pydantic>=2.7"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.5"
+]
+future = [
+  "typer>=0.12",
+  "fastapi>=0.115"
+]
+
+[project.scripts]
+pm-skill = "pm_skill.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/AIGRABER/pm-skill"
+Repository = "https://github.com/AIGRABER/pm-skill"
+Issues = "https://github.com/AIGRABER/pm-skill/issues"
+Documentation = "https://github.com/AIGRABER/pm-skill#readme"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
