@@ -26,30 +26,63 @@ Las sesiones de programación con IA son poderosas, pero el estado del proyecto 
 
 ```bash
 pipx install git+https://github.com/AIGRABER/pm-skill.git
-pm-skill init-project --project-id my-project --display-name "My Project" --json
-pm-skill show-status --json
-pm-skill create-work-surface --title "Add login flow" --json
-pm-skill run-checks --profile default --json
 ```
 
-## Core Ideas
+Después de instalarlo, habla con tu coding agent en lenguaje natural:
 
-- Repository files are the source of truth.
-- `.pm-skill/` stores machine-readable control-plane state.
-- Markdown files store requirements, TODOs, changelogs, acceptance notes, and handovers.
-- CLI, REST, and MCP adapters should use the same command envelope.
-- Write operations are audited so long-running work can be reconstructed.
+El valor principal de `pm-skill` no es solo recuperar contexto. Es dar a AI coding un plano de control dentro del repositorio: recuperar estado -> discutir incertidumbre -> extraer requisitos borrador -> aprobar alcance -> dividir TODOs -> limitar contexto -> verificar aceptación -> auditar cambios -> handover/release.
 
-## Useful Commands
+```text
+Usa pm-skill para inicializar el proyecto en C:\Users\win\Documents\MyProject. Usa project id my-project y nombre visible "My Project".
+```
 
-| Command | Purpose |
+```text
+Usa pm-skill para recuperar el estado de control del proyecto y dime la rama actual, archivos modificados, requisitos activos, TODOs abiertos, riesgos y siguiente acción segura.
+```
+
+```text
+No estoy seguro de qué debe incluir el rediseño del login. Discútelo conmigo primero, haz preguntas de aclaración, extrae objetivos, restricciones, riesgos y criterios de aceptación de la conversación, y guárdalo como requisito borrador de pm-skill para revisión.
+```
+
+```text
+Usa pm-skill para crear una superficie de trabajo para "Añadir flujo de inicio de sesión" y ejecuta los checks normales del repositorio.
+```
+
+```text
+Crea con pm-skill un requisito borrador para "Inicio de sesión sin contraseña" y conviértelo en el límite de alcance antes de codificar: objetivo, responsables, riesgos y criterios iniciales de aceptación.
+```
+
+```text
+Promueve la parte de magic-link sign-in a requisito formal, crea TODOs desde ese requisito y genera una matriz de aceptación.
+```
+
+```text
+Crea un work package para el primer TODO, agrega archivos de implementación y verificación para limitar el contexto del agent, y valida la matriz de aceptación antes de marcarlo como terminado.
+```
+
+También puedes pedirlo en otro idioma; el agent traduce la intención a comandos `pm-skill`, REST o MCP.
+
+## Ideas Clave
+
+- Los archivos del repositorio son la fuente de verdad.
+- `.pm-skill/` guarda el estado del plano de control legible por máquina.
+- Markdown guarda requisitos, TODOs, changelogs, notas de aceptación y handovers.
+- CLI, REST y MCP deben usar el mismo command envelope.
+- Las escrituras quedan auditadas para reconstruir trabajos largos de AI coding.
+
+## Comandos Útiles
+
+| Comando | Uso |
 | --- | --- |
-| `pm-skill show-status --json` | Inspect the current project state. |
-| `pm-skill recover-project --json` | Reconstruct project context. |
-| `pm-skill create-work-surface --title "..." --json` | Start branch-aware work. |
-| `pm-skill update-work-surface --progress-note "..." --json` | Record progress. |
-| `pm-skill run-checks --profile default --json` | Run configured checks. |
-| `pm-skill handover --summary-level standard --json` | Leave a handover for the next session. |
+| `pm-skill show-status --json` | Ver rama, archivos modificados, TODOs activos, avisos y siguiente paso. |
+| `pm-skill recover-project --json` | Recuperar el estado de control y el contexto del proyecto. |
+| `pm-skill create-requirement --title "..." --json` | Crear un requisito borrador desde una conversación o especificación. |
+| `pm-skill promote-requirement REQ-DRAFT-... --json` | Promover un requisito borrador a requisito formal. |
+| `pm-skill create-todo-from-source --source-requirement REQ-... --json` | Crear TODOs trazables desde un requisito formal. |
+| `pm-skill create-acceptance-matrix TODO-... --json` | Generar una matriz de aceptación para un TODO. |
+| `pm-skill create-work-package TODO-... --json` | Crear un work package enfocado para limitar el contexto del agent. |
+| `pm-skill validate-acceptance TODO-... --checks-profile default --json` | Validar completitud con matriz de aceptación y checks. |
+| `pm-skill handover --summary-level standard --json` | Dejar un handover para la siguiente sesión. |
 
 ## License
 

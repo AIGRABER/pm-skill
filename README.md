@@ -39,7 +39,15 @@ The result is a repo that can explain itself.
 
 ## Quick Start
 
-### 1. Install from the GitHub repository
+`pm-skill` is most useful when you talk to your coding agent in plain language and let the agent call the CLI, REST, or MCP adapter for you. It is not only a context snapshot tool. It gives AI coding work a repository-native control plane:
+
+```text
+recover state -> discuss uncertainty -> extract draft requirements -> approve scope -> split TODOs -> constrain context -> verify acceptance -> audit changes -> hand over or release
+```
+
+That control loop keeps agents from guessing what matters, drifting beyond the agreed scope, losing progress between sessions, or marking work done without evidence.
+
+### 1. Install from GitHub
 
 ```bash
 pipx install git+https://github.com/AIGRABER/pm-skill.git
@@ -53,52 +61,90 @@ python -m pip install git+https://github.com/AIGRABER/pm-skill.git
 
 `pm-skill` requires Python 3.11 or newer.
 
-### 2. Initialize a repository
+### 2. Tell your agent what you want
 
-From the root of a Git repository:
+Use natural language. The agent should translate your request into audited `pm-skill` operations and show you the important result.
 
-```bash
-pm-skill init-project --project-id my-project --display-name "My Project" --json
+Set up the repository:
+
+```text
+Use pm-skill to initialize the project at C:\Users\win\Documents\MyProject. Use project id my-project and display name "My Project".
 ```
 
-For an existing codebase that you want to onboard:
+For an existing codebase:
 
-```bash
-pm-skill --project-path /path/to/repo onboard-project --project-id my-project --json
+```text
+Onboard this existing repo into pm-skill, then show me the current project status.
 ```
 
-### 3. Start every session by reading the state
+At the start of each session:
 
-```bash
-pm-skill show-status --json
+```text
+Use pm-skill to recover the project control state. Tell me the current branch, dirty files, active requirements, active TODOs, warnings, and the next safe action.
 ```
 
-If you need more context:
+When the user is not sure what they want yet:
 
-```bash
-pm-skill recover-project --json
+```text
+Discuss the login redesign with me first. Ask clarifying questions, identify the actual requirements from the conversation, then save them as a pm-skill draft requirement for review.
 ```
 
-### 4. Create a new work surface
+Define the boundary before coding:
 
-```bash
-pm-skill create-work-surface --title "Add login flow" --json
+```text
+Create a pm-skill draft requirement for "Passwordless login". Capture the goal, owners, dependencies, risks, and initial acceptance criteria.
 ```
 
-This prepares a branch-aware work surface: requirement notes, TODO, branch marker, and audit trail.
+Approve only the part that is ready to build:
 
-### 5. Record progress and run checks
-
-```bash
-pm-skill update-work-surface --progress-note "Login endpoint is implemented; tests are next." --json
-pm-skill run-checks --profile default --json
+```text
+Promote the passwordless-login draft into a formal requirement slice for magic-link sign-in. Include acceptance criteria for email delivery, token expiry, replay protection, and regression tests.
 ```
 
-### 6. Leave a handover before pausing
+Turn the approved scope into controlled work:
 
-```bash
-pm-skill handover --summary-level standard --next-action "Continue with login regression tests." --json
+```text
+Create TODOs from the approved magic-link requirement, generate an acceptance matrix for each TODO, and show me the coverage gaps before implementation starts.
 ```
+
+Limit the agent's working context:
+
+```text
+Create a work package for the first TODO. Add the relevant auth files as implementation context and the login tests as verification context.
+```
+
+While working:
+
+```text
+Record this progress in pm-skill: the login endpoint is implemented and regression tests are next.
+Run the default checks afterwards.
+```
+
+Before marking work done:
+
+```text
+Validate the acceptance matrix for this TODO, run the default checks, and only then mark it done with a branch changelog entry.
+```
+
+Before pausing:
+
+```text
+Write a pm-skill handover. The next action is to continue with login regression tests.
+```
+
+### 3. Use any language you work in
+
+Natural-language instructions do not need to be English. For example:
+
+```text
+用 pm-skill 恢复这个项目的控制状态，告诉我当前分支、脏文件、活跃需求、未完成 TODO、风险和下一步安全动作。
+```
+
+```text
+Usa pm-skill para recuperar el estado de control del proyecto y dime la rama actual, requisitos activos, TODOs abiertos, riesgos y siguiente acción segura.
+```
+
+The underlying project files stay in the repository, and write operations are still audited under `.pm-skill/audit/audit-log.jsonl`.
 
 ## What pm-skill writes
 
@@ -131,12 +177,17 @@ The repository remains the source of truth. You can read the Markdown files dire
 | `pm-skill show-status --json` | See branch, dirty state, active TODOs, warnings, and next actions. |
 | `pm-skill recover-project --json` | Reconstruct project context at the start of a session. |
 | `pm-skill get-context --mode turn --json` | Get a compact, low-noise context bundle for an agent turn. |
+| `pm-skill create-requirement --title "..." --json` | Capture a draft requirement before implementation. |
+| `pm-skill promote-requirement REQ-DRAFT-... --json` | Promote a draft requirement into approved work. |
+| `pm-skill promote-requirement-slice REQ-DRAFT-... --title "..." --acceptance "..." --json` | Approve only the buildable slice of a broader draft. |
 | `pm-skill create-work-surface --title "..." --json` | Create branch-aware requirement/TODO/progress scaffolding. |
 | `pm-skill update-work-surface --progress-note "..." --json` | Record progress, TODO state, and branch changelog entries. |
 | `pm-skill list-work-branches --json` | Inspect unfinished branch work. |
 | `pm-skill create-todo-from-source --title "..." --source-path docs/spec.md --json` | Create a TODO and audit that it covers the source material. |
 | `pm-skill create-acceptance-matrix --todo-id TODO-... --json` | Generate a coverage-oriented acceptance matrix for a TODO. |
 | `pm-skill validate-acceptance --todo-id TODO-... --json` | Validate an acceptance matrix and optionally run checks. |
+| `pm-skill create-work-package TODO-... --json` | Build a focused implementation and verification context bundle for a TODO. |
+| `pm-skill add-work-package-context TODO-... --action implementation --file src/app.py --reason "..." --json` | Add concrete files to a TODO work package. |
 | `pm-skill run-checks --profile default --json` | Run the repository-defined validation profile. |
 | `pm-skill sync-index --json` | Refresh file fingerprints and project index metadata. |
 | `pm-skill prepare-release --json` | Prepare a release proposal from branch work and checks. |

@@ -26,30 +26,63 @@ AI kodlama oturumları güçlüdür, fakat proje durumu konuşmaların içinde d
 
 ```bash
 pipx install git+https://github.com/AIGRABER/pm-skill.git
-pm-skill init-project --project-id my-project --display-name "My Project" --json
-pm-skill show-status --json
-pm-skill create-work-surface --title "Add login flow" --json
-pm-skill run-checks --profile default --json
 ```
 
-## Core Ideas
+Kurulumdan sonra coding agent'a doğal dille ne istediğini söyle:
 
-- Repository files are the source of truth.
-- `.pm-skill/` stores machine-readable control-plane state.
-- Markdown files store requirements, TODOs, changelogs, acceptance notes, and handovers.
-- CLI, REST, and MCP adapters should use the same command envelope.
-- Write operations are audited so long-running work can be reconstructed.
+`pm-skill` sadece bağlam kurtarma aracı değildir. AI coding için depo içinde bir control plane sağlar: recover state -> discuss uncertainty -> extract draft requirements -> approve scope -> split TODOs -> constrain context -> verify acceptance -> audit changes -> handover/release.
 
-## Useful Commands
+```text
+pm-skill ile C:\Users\win\Documents\MyProject projesini başlat. project id my-project, görünen ad "My Project" olsun.
+```
 
-| Command | Purpose |
+```text
+pm-skill ile proje control state'ini kurtar; mevcut dalı, değişmiş dosyaları, aktif gereksinimleri, açık TODOları, riskleri ve sonraki güvenli adımı söyle.
+```
+
+```text
+Login yenilemesinin ne içermesi gerektiğinden emin değilim. Önce benimle tartış, netleştirici sorular sor, konuşmadan hedefleri, kısıtları, riskleri ve kabul kriterlerini çıkar, sonra pm-skill taslak gereksinimi olarak kaydet.
+```
+
+```text
+"Login akışı ekle" işi için pm-skill çalışma yüzeyi oluştur ve deponun varsayılan kontrollerini çalıştır.
+```
+
+```text
+"Şifresiz giriş" için pm-skill taslak gereksinimi oluştur; kodlamadan önce kapsam sınırı olarak hedefi, sahipleri, riskleri ve ilk kabul kriterlerini yaz.
+```
+
+```text
+Magic-link sign-in kısmını resmi gereksinime yükselt, bu gereksinimden TODO oluştur ve kabul matrisi üret.
+```
+
+```text
+İlk TODO için work package oluştur, agent'ın çalışma bağlamını sınırlamak için ilgili uygulama ve doğrulama dosyalarını ekle, bitirmeden önce kabul matrisini doğrula.
+```
+
+Başka bir dilde de istekte bulunabilirsin; agent doğal dili `pm-skill` komutlarına, REST'e veya MCP çağrılarına çevirir.
+
+## Temel Fikirler
+
+- Depodaki dosyalar doğruluk kaynağıdır.
+- `.pm-skill/` makine tarafından okunabilir control-plane durumunu saklar.
+- Markdown gereksinimleri, TODOları, changelogları, kabul notlarını ve handoverları saklar.
+- CLI, REST ve MCP adaptörleri aynı command envelope kullanmalıdır.
+- Yazma işlemleri denetlenir, böylece uzun AI coding işleri yeniden kurulabilir.
+
+## Kullanışlı Komutlar
+
+| Komut | Amaç |
 | --- | --- |
-| `pm-skill show-status --json` | Inspect the current project state. |
-| `pm-skill recover-project --json` | Reconstruct project context. |
-| `pm-skill create-work-surface --title "..." --json` | Start branch-aware work. |
-| `pm-skill update-work-surface --progress-note "..." --json` | Record progress. |
-| `pm-skill run-checks --profile default --json` | Run configured checks. |
-| `pm-skill handover --summary-level standard --json` | Leave a handover for the next session. |
+| `pm-skill show-status --json` | Mevcut dalı, değişmiş dosyaları, aktif TODOları, uyarıları ve sonraki adımı gör. |
+| `pm-skill recover-project --json` | Proje control state'ini ve bağlamı kurtar. |
+| `pm-skill create-requirement --title "..." --json` | Konuşmadan veya açık bir tanımdan taslak gereksinim oluştur. |
+| `pm-skill promote-requirement REQ-DRAFT-... --json` | Taslak gereksinimi resmi gereksinime yükselt. |
+| `pm-skill create-todo-from-source --source-requirement REQ-... --json` | Resmi gereksinimden izlenebilir TODO oluştur. |
+| `pm-skill create-acceptance-matrix TODO-... --json` | TODO için kabul matrisi üret. |
+| `pm-skill create-work-package TODO-... --json` | Agent bağlamını sınırlayan focused work package oluştur. |
+| `pm-skill validate-acceptance TODO-... --checks-profile default --json` | Kabul matrisi ve checks ile tamamlanma durumunu doğrula. |
+| `pm-skill handover --summary-level standard --json` | Sonraki oturum için handover bırak. |
 
 ## License
 
